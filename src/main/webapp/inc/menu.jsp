@@ -99,7 +99,6 @@ h1.display-3 {
 	transition-duration : 1s;
 }
 
-
 .bg-dark a {
 	color: white !important;
 }

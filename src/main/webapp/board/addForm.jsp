@@ -51,7 +51,7 @@
     </div>
     <div class="form-group row">
       <div class="col-sm-offset-2 col-sm-10">
-        <input type="submit" class="btn btn-primary btn-submit" value=" 등록 ">
+        <input type="button" class="btn btn-primary btn-submit" value=" 등록 ">
         <input type="reset" class="btn btn-primary" value=" 취소 ">
       </div>
     </div>
@@ -61,7 +61,7 @@
 <jsp:include page="/inc/footer.jsp" />
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const btnSubmit = document.querySelector('btn-submit');
+    const btnSubmit = document.querySelector('.btn-submit');
     const frmAdd = document.querySelector('form[name=frmAdd]');
 
     btnSubmit.addEventListener('click', function () {

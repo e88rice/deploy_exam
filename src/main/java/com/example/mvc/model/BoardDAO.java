@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import com.example.mvc.database.DBConnection;
 
-public class BoardDAO {
+public class BoardDAO { // DAO = 로직에 필요한 데이터 관련 작업을 담당하는 친구 ( 쿼리문으로 CRUD는 여기서 다 처리함 )
 	// 싱글톤 타입으로 작성
 	private static BoardDAO instance;
 	
@@ -27,6 +27,7 @@ public class BoardDAO {
 		
 		int cnt = 0;
 		String sql;
+
 		if(items == null || text == null) { // 검색어가 없는 경우의 쿼리문
 			sql = "SELECT count(*) FROM board";
 		} else { // 검색어가 없는 경우의 쿼리문
@@ -60,15 +61,18 @@ public class BoardDAO {
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		int start = (page - 1) * limit; 
+
 		String sql;
 		if (items == null && text == null) { // 검색어가 없는 경우
 			sql = "SELECT * FROM board ORDER BY num DESC"; // 전체 보드를 가져와서 최신순으로 가져옴
 		} else { // 검색어가 있는 경우
 			// 해당하는 검색어를 기준으로 최신순으로 가져옴
 			sql = "SELECT * FROM board WHERE " + items + " LIKE '%" + text + "%' ORDER BY num DESC ";
+//			page = 1; // 검색어로 검색하는 경우 무조건 1페이지 부터 시작  /// 여기도 삭제
 		}
+
+		int start = (page - 1) * limit;
+
 		sql += " LIMIT " + start + ", " + limit;
 		
 		// 조건을 설정하고 데이터를 LIMIT만큼 가져옴
@@ -79,7 +83,8 @@ public class BoardDAO {
 			connection = DBConnection.getConnection();
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-			
+
+			int index = 1;
 			while (rs.next()) { // 쿼리문으로 가져온 데이터들을 순회하며 리스트에 추가
 				BoardDTO board = new BoardDTO();
 				board.setNum(rs.getInt("num"));
@@ -201,6 +206,59 @@ public class BoardDAO {
 			}
 		}
 		return board;
+	}
+
+	// 게시글 수정에 필요한 데이터 가져오는 메소드
+	public void updateBoard(BoardDTO board) {
+		// 선택된 글 내용 수정하기
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			String sql = "UPDATE board SET name = ?, subject = ?, content = ? where num = ?";
+
+			connection = DBConnection.getConnection();
+			pstmt = connection.prepareStatement(sql);
+
+			pstmt.setString(1, board.getName());
+			pstmt.setString(2, board.getSubject());
+			pstmt.setString(3, board.getContent());
+			pstmt.setInt(4, board.getNum());
+
+			pstmt.executeUpdate();
+		} catch (Exception ex) {
+			System.out.println("update() 에러 : " + ex);
+		} finally {
+			try{
+				if (pstmt != null) pstmt.close();
+				if (connection != null) connection.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}
+		}
+	}
+
+	public void deleteBoard(int num) {
+		// 선택된 글 내용 수정하기
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			String sql = "DELETE FROM board where num = ?";
+			connection = DBConnection.getConnection();
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			pstmt.executeUpdate();
+		} catch (Exception ex) {
+			System.out.println("update() 에러 : " + ex);
+		} finally {
+			try{
+				if (pstmt != null) pstmt.close();
+				if (connection != null) connection.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}
+		}
 	}
 
 }
