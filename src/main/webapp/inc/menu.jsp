@@ -128,7 +128,7 @@ h1.display-3 {
 <nav style="position: fixed; z-index: 999; width: 100vw; opacity: 0.8;" class="navbar navbar-expand" id="nav-boss">
 	<div class="container">
 		<div class="navbar-header">
-			<%= ProductDTO productDTO = %>
+<%--			<%= ProductDTO productDTO = %>--%>
 			<a class="navbar-brand" href="../welcome/welcome.jsp">Home</a>
 		</div>
 		<div>		
